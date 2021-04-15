@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
+import { UserContext } from "../App";
 
 const Login = () => {
+  const { state, dispatch } = useContext(UserContext);
   const history = useHistory();
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -29,6 +31,10 @@ const Login = () => {
         } else {
           localStorage.setItem("jwt", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
+
+          //(state,action) => reducer
+          dispatch({ type: "USER", payload: data.user }); //call reducer
+
           Swal.fire({
             position: "center",
             type: "success",
@@ -36,6 +42,7 @@ const Login = () => {
             showConfirmButton: false,
             timer: 2000,
           });
+          console.log(data.user);
           history.push("/");
         }
       })
@@ -55,7 +62,7 @@ const Login = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          type="text"
+          type="password"
           placeholder="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
