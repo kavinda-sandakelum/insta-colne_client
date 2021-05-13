@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { UserContext } from "../App";
 
 const Home = () => {
   const [data, setData] = useState([]);
 
+  const { state, dispatch } = useContext(UserContext);
   useEffect(() => {
     fetch("/allpost", {
       headers: {
@@ -11,9 +13,90 @@ const Home = () => {
     })
       .then((res) => res.json())
       .then((result) => {
+        console.log(result);
         setData(result.posts);
       });
   }, []);
+
+  const likePost = (id) => {
+    fetch("/like", {
+      method: "put",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+      body: JSON.stringify({
+        postId: id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        const newData = data.map((item) => {
+          if (item._id === result._id) {
+            return result;
+          } else {
+            return item;
+          }
+        });
+        setData(newData);
+      });
+  };
+
+  const dislikePost = (id) => {
+    fetch("/dislike", {
+      method: "put",
+
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+      body: JSON.stringify({
+        postId: id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        //console.log(result);
+        const newData = data.map((item) => {
+          if (item._id === result._id) {
+            return result;
+          } else {
+            return item;
+          }
+        });
+        setData(newData);
+      });
+  };
+
+  const commentArray = (text, postId) => {
+    fetch("/comment", {
+      method: "put",
+
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+      body: JSON.stringify({
+        postId,
+        text,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+        const newData = data.map((item) => {
+          if (item._id === result._id) {
+            return result;
+          } else {
+            return item;
+          }
+        });
+        setData(newData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div className="home">
@@ -24,10 +107,47 @@ const Home = () => {
             <div className="card-image">
               <img src={item.url} />
               <div className="card-content">
-                <i className="material-icons">favorite_border</i>
+                {item.likes.includes(state._id) ? (
+                  <i
+                    className="material-icons"
+                    onClick={() => {
+                      dislikePost(item._id);
+                    }}
+                  >
+                    favorite
+                  </i>
+                ) : (
+                  <i
+                    className="material-icons"
+                    onClick={() => {
+                      likePost(item._id);
+                    }}
+                  >
+                    favorite_border
+                  </i>
+                )}
+
+                <h6>{item.likes.length} likes</h6>
                 <h6>{item.title}</h6>
                 <p>{item.body}</p>
-                <input type="text" placeholder="add acomment" />
+                {item.comments.map((record) => {
+                  return (
+                    <h6 key={record._id}>
+                      <span style={{ fontWeight: 600 }}>
+                        {record.postedBy.name}
+                      </span>{" "}
+                      {record.text}
+                    </h6>
+                  );
+                })}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    commentArray(e.target[0].value, item._id);
+                  }}
+                >
+                  <input type="text" placeholder="add acomment" />
+                </form>
               </div>
             </div>
           </div>
