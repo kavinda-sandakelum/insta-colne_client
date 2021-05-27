@@ -35,3 +35,11 @@ h2 {
   height: max-content;
   margin: 26px auto;
 }
+
+i.icon-red {
+  color: red;
+}
+
+i.context-menu {
+  cursor: context-menu;
+}
