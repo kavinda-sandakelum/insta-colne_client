@@ -14,6 +14,7 @@ const Home = () => {
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
+
         setData(result.posts);
       });
   }, []);
@@ -68,6 +69,40 @@ const Home = () => {
       });
   };
 
+  const deletePost = (postid) => {
+    fetch(`/deletepost/${postid}`, {
+      method: "delete",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+        const newData = data.filter((item) => {
+          return item._id !== result._id;
+        });
+        setData(newData);
+      });
+  };
+
+  // const deleteComment = (postId, commentid) => {
+  //   // fetch(`/deletecomment/${postId},${commentid}`, {
+  //   //   method: "delete",
+  //   //   headers: {
+  //   //     Authorization: "Bearer " + localStorage.getItem("jwt"),
+  //   //   },
+  //   // })
+  //   //   .then((res) => res.json())
+  //   //   .then((result) => {
+  //   //     console.log(result);
+  //   //     const newData = data.filter((item) => {
+  //   //       return item._id !== result._id;
+  //   //     });
+  //   //     setData(newData);
+  //   //   });
+  // };
+
   const commentArray = (text, postId) => {
     fetch("/comment", {
       method: "put",
@@ -103,13 +138,25 @@ const Home = () => {
       {data.map((item) => {
         return (
           <div className="card home-card" key={item._id}>
-            <h5>{item.postedBy.name}</h5>
+            <h5>
+              {item.postedBy.name}{" "}
+              {item.postedBy._id == state._id && (
+                <i
+                  className="material-icons"
+                  style={{ float: "right" }}
+                  onClick={() => deletePost(item._id)}
+                >
+                  delete
+                </i>
+              )}
+            </h5>
+
             <div className="card-image">
               <img src={item.url} />
               <div className="card-content">
                 {item.likes.includes(state._id) ? (
                   <i
-                    className="material-icons"
+                    className="material-icons icon-red"
                     onClick={() => {
                       dislikePost(item._id);
                     }}
@@ -136,7 +183,14 @@ const Home = () => {
                       <span style={{ fontWeight: 600 }}>
                         {record.postedBy.name}
                       </span>{" "}
-                      {record.text}
+                      {record.text}{" "}
+                      <i
+                        class="material-icons"
+                        style={{ float: "right" }}
+                        // onClick={() => deleteComment()}
+                      >
+                        delete
+                      </i>
                     </h6>
                   );
                 })}
