@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "../App";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [data, setData] = useState([]);
@@ -13,7 +14,7 @@ const Home = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
+        // console.log(result);
 
         setData(result.posts);
       });
@@ -78,7 +79,7 @@ const Home = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         const newData = data.filter((item) => {
           return item._id !== result._id;
         });
@@ -118,7 +119,7 @@ const Home = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         const newData = data.map((item) => {
           if (item._id === result._id) {
             return result;
@@ -139,7 +140,15 @@ const Home = () => {
         return (
           <div className="card home-card" key={item._id}>
             <h5>
-              {item.postedBy.name}{" "}
+              <Link
+                to={
+                  item.postedBy._id !== state._id
+                    ? "/profile/" + item.postedBy._id
+                    : "/profile"
+                }
+              >
+                {item.postedBy.name}
+              </Link>{" "}
               {item.postedBy._id == state._id && (
                 <i
                   className="material-icons"
