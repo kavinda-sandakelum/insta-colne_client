@@ -3,7 +3,7 @@ import { UserContext } from "../App";
 import { useParams } from "react-router-dom";
 
 const Profile = () => {
-  const [userProfile, setUserprofile] = useState(null);
+  const [userProfile, setUserprofile] = useState();
   const { state, dispatch } = useContext(UserContext);
   const { userid } = useParams();
 
@@ -17,7 +17,6 @@ const Profile = () => {
       .then((result) => {
         console.log(result);
         setUserprofile(result);
-        console.log(userProfile.user.name);
       });
   }, []);
 
@@ -44,8 +43,8 @@ const Profile = () => {
               />
             </div>
             <div>
-              {/* <h4>{userProfile.user.name}</h4>
-              <h5>{userProfile.user.email}</h5> */}
+              <h4>{userProfile.user.name}</h4>
+              <h5>{userProfile.user.email}</h5>
               <div
                 style={{
                   display: "flex",
@@ -60,7 +59,7 @@ const Profile = () => {
             </div>
           </div>
           <div className="gallery">
-            {/* {userProfile.posts.map((item) => {
+            {userProfile.posts.map((item) => {
               return (
                 <img
                   key={item._id}
@@ -69,7 +68,7 @@ const Profile = () => {
                   alt={item.title}
                 />
               );
-            })} */}
+            })}
           </div>
         </div>
       ) : (
