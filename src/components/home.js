@@ -88,20 +88,20 @@ const Home = () => {
   };
 
   // const deleteComment = (postId, commentid) => {
-  //   // fetch(`/deletecomment/${postId},${commentid}`, {
-  //   //   method: "delete",
-  //   //   headers: {
-  //   //     Authorization: "Bearer " + localStorage.getItem("jwt"),
-  //   //   },
-  //   // })
-  //   //   .then((res) => res.json())
-  //   //   .then((result) => {
-  //   //     console.log(result);
-  //   //     const newData = data.filter((item) => {
-  //   //       return item._id !== result._id;
-  //   //     });
-  //   //     setData(newData);
-  //   //   });
+  //   fetch(`/deletecomment/${postId},${commentid}`, {
+  //     method: "delete",
+  //     headers: {
+  //       Authorization: "Bearer " + localStorage.getItem("jwt"),
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((result) => {
+  //       console.log(result);
+  //       const newData = data.filter((item) => {
+  //         return item._id !== result._id;
+  //       });
+  //       setData(newData);
+  //     });
   // };
 
   const commentArray = (text, postId) => {
